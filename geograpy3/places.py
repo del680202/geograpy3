@@ -90,7 +90,7 @@ class PlaceContext(object):
     def is_a_country(self, s): 
         s = self.correct_country_mispelling(s)
         try:
-            pycountry.countries.get(name=s)
+            return pycountry.countries.get(name=s) is not None  ##
             return True
         except KeyError:
             return False
@@ -125,6 +125,13 @@ class PlaceContext(object):
         """Method used to find all matching countries."""
         countries = [self.correct_country_mispelling(place)
                      for place in self.places if self.is_a_country(place)]
+        for place in self.places:
+            place_tokens = place.split(" ")
+            if len(place_tokens) > 1:
+                for place_token in place_tokens:
+                    place_token = self.correct_country_mispelling(place_token)
+                    if self.is_a_country(place_token):
+                        countries.append(place_token)
 
         self.country_mentions = Counter(countries).most_common()
         self.countries = list(set(countries))

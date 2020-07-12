@@ -3,6 +3,7 @@ from newspaper import Article
 
 #this comment can be ignored, just for PyCharm test purposes
 #this is a t
+import pycountry
 
 class Extractor(object):
 
@@ -32,3 +33,7 @@ class Extractor(object):
             if type(ne) is nltk.tree.Tree:
                 if (ne.label() == 'GPE' or ne.label() == 'PERSON' or ne.label() == 'ORGANIZATION'):
                     self.places.append(u' '.join([i[0] for i in ne.leaves()]))
+            elif type(ne) is tuple:
+                token = ne[0]
+                if pycountry.countries.get(name=token) is not None:
+                     self.places.append(token)
